@@ -1,4 +1,4 @@
-view: hll_test {
+view: hll_test_1 {
   derived_table: {
     sql: select prc_date,prc_hour,prc_min,store_id,theme_name,country,browser,os,
       APPROX_COUNT_DISTINCT(ip_hll) as count_distinct_ip_hll,

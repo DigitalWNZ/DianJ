@@ -21,13 +21,18 @@ explore: hll_test01_prc_min_store_id {
 }
 
 
-explore: hll_test {}
+explore: hll_test_1 {}
 
 explore: csv_import {}
 
 explore: csv_test {}
 
 explore: my_view {}
+
+
+explore: test_hll {}
+
+# explore: hll_test{}
 
 explore: events_all {
   sql_always_where: ${events_all__properties.key}='theme_name' ;;
