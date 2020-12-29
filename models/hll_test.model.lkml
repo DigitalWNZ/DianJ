@@ -14,7 +14,8 @@ explore: hll_test01_prc_min_store_id {
   persist_for: "24 hours"
   join: count_by_store {
     type: left_outer
-    sql_on: ${hll_test01_prc_min_store_id.store_id}=${count_by_store.store_id};;
+    sql_on: ${hll_test01_prc_min_store_id.store_id}=${count_by_store.store_id} and
+    ${hll_test01_prc_min_store_id.prc_date} = ${count_by_store.dt};;
     relationship: many_to_one
   }
 }
