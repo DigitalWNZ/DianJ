@@ -12,7 +12,13 @@ persist_with: hll_test_default_datagroup
 
 explore: hll_test01_prc_min_store_id {
   persist_for: "24 hours"
+  join: count_by_store {
+    type: left_outer
+    sql_on: ${hll_test01_prc_min_store_id.store_id}=${count_by_store.store_id};;
+    relationship: many_to_one
+  }
 }
+
 
 explore: hll_test {}
 
@@ -20,12 +26,22 @@ explore: csv_import {}
 
 explore: csv_test {}
 
+explore: my_view {}
+
 explore: events_all {
   sql_always_where: ${events_all__properties.key}='theme_name' ;;
   join: events_all__properties {
     view_label: "Events All: Properties"
     sql: LEFT JOIN UNNEST(${events_all.properties}) as events_all__properties ;;
     relationship: one_to_many
+  }
+}
+
+explore: demo_for_tongbin {
+  join:demo_for_tongbin_2{
+    from:demo_for_tongbin
+    sql_on: ${demo_for_tongbin.client_hll} = ${demo_for_tongbin_2.client_hll};;
+    relationship: one_to_one
   }
 }
 

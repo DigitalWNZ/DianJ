@@ -129,6 +129,7 @@ view: hll_test01_prc_min_store_id {
     sql: ${TABLE}.store_id ;;
   }
 
+
   dimension: theme_name {
     type: string
     sql: ${TABLE}.theme_name ;;
@@ -141,6 +142,10 @@ view: hll_test01_prc_min_store_id {
 
 
 
+ measure: hll_count_test {
+   type: number
+   sql: (select hll_count.merge(${TABLE}.client_hll) from `admin-account-293313.Temp_table_forBI.hll_test01_prc_min_store_id` where ${TABLE}.event = 'PageView');;
+ }
  measure: count_distinct_ip_hll {
     # type: number
     # sql: APPROX_COUNT_DISTINCT(ip_hll) ;;
@@ -148,6 +153,7 @@ view: hll_test01_prc_min_store_id {
     allow_approximate_optimization: yes
     sql: ${ip_hll} ;;
   }
+
 
 
 
