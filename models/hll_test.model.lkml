@@ -23,12 +23,16 @@ explore: hll_test01_prc_min_store_id {
 
 explore: hll_test_1 {}
 
+
+explore: hll_mins {}
+
 explore: csv_import {}
 
 explore: csv_test {}
 
 explore: my_view {}
 
+explore: hll_mins_pv_uv_usd_store_id_0915_utc_tongbin {}
 
 explore: test_hll {}
 

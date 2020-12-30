@@ -1,25 +1,25 @@
-view: test_hll {
+view: hll_mins {
   derived_table: {
     sql: with hll_merge as
       (SELECT
-            date(date_min) as dt,
+            extract( date from date_min) as dt,
             HLL_COUNT.MERGE(case when t.event='pageview' then ip_hll else null end) as pageview_ip,
             HLL_COUNT.MERGE(case when t.event='add_to_cart' then ip_hll else null end) as add_to_cart_ip,
             HLL_COUNT.MERGE(case when t.event='begin_checkout' then ip_hll else null end) as check_out_ip,
-            HLL_COUNT.MERGE(case when t.event='set_shipping_address' then ip_hll else null end) as add_shipping_add_ip,
+            HLL_COUNT.MERGE(case when t.event='set_shipping_address' then ip_hll else null end) as add_shipping_address_ip,
             HLL_COUNT.MERGE(case when t.event='add_payment_info' then ip_hll else null end) as add_payment_info_ip,
             HLL_COUNT.MERGE(case when t.event='place_order' then ip_hll else null end) as place_order_ip,
             FROM `admin-account-293313.HLL_scheduled.hll_mins_PvUvUsd_store_id_0915_utc_tongbin` as t
             where {% condition country %} t.country {% endcondition %}
+            GROUP BY extract(date from date_min))
 
-            GROUP BY date(date_min))
       select
       country,
       date_min,
       hll_merge.*
       from `admin-account-293313.HLL_scheduled.hll_mins_PvUvUsd_store_id_0915_utc_tongbin` t1
       left join hll_merge
-      on date(date_min)=hll_merge.dt
+      on extract(date from date_min)=hll_merge.dt
       where {% condition country %} t1.country {% endcondition %}
        ;;
   }
@@ -37,12 +37,14 @@ view: test_hll {
   dimension_group: date_min {
     type: time
     sql: ${TABLE}.date_min ;;
+    convert_tz: yes
   }
 
   dimension: dt {
     type: date
     datatype: date
     sql: ${TABLE}.dt ;;
+    convert_tz: yes
   }
 
   dimension: pageview_ip {
@@ -60,7 +62,7 @@ view: test_hll {
     sql: ${TABLE}.check_out_ip ;;
   }
 
-  dimension: add_shipping_add_ip {
+  dimension: add_shipping_address_ip {
     type: number
     sql: ${TABLE}.add_shipping_add_ip ;;
   }
@@ -91,7 +93,7 @@ view: test_hll {
     sql: ${TABLE}.check_out_ip ;;
   }
 
-  measure: m_add_shipping_add_ip {
+  measure: m_add_shipping_address_ip {
     type: average
     sql: ${TABLE}.add_shipping_add_ip ;;
   }
@@ -114,7 +116,7 @@ view: test_hll {
       pageview_ip,
       add_to_cart_ip,
       check_out_ip,
-      add_shipping_add_ip,
+      add_shipping_address_ip,
       add_payment_info_ip,
       place_order_ip
     ]
