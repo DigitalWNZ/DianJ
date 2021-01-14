@@ -20,8 +20,11 @@ explore: hll_test01_prc_min_store_id {
   }
 }
 
-
+explore: rolling_test {}
+explore: rolling_test_1 {}
 explore: hll_test_1 {}
+
+explore: problem_2 {}
 
 
 explore: hll_mins {}

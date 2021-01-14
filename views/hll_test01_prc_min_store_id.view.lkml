@@ -40,6 +40,33 @@ view: hll_test01_prc_min_store_id {
       end;;
   }
 
+  parameter: first_period {
+    description: "date of first period"
+    type: date
+  }
+
+  parameter: second_period {
+    description: "date of second period"
+    type: date
+  }
+
+  parameter: time_interval {
+    allowed_value: {value: "Day"}
+    allowed_value: {value: "Week"}
+  }
+
+
+  dimension: pivot_dimension {
+    label_from_parameter: time_granularity
+    sql:
+      case
+        when {% parameter time_granularity %} = 'Day' THEN ${prc_min_hour_of_day}
+        when {% parameter time_granularity %} = 'Week' THEN ${prc_min_day_of_week}
+      end;;
+  }
+
+
+
   # dimension_group: timekey_test {
   #   label_from_parameter: num_of_minutes   --- label from parameter is not applicable to dimension group
   #   type: time
@@ -115,6 +142,8 @@ view: hll_test01_prc_min_store_id {
       raw,
       time,
       hour,
+      hour_of_day,
+      day_of_week,
       date,
       week,
       month,
@@ -140,18 +169,34 @@ view: hll_test01_prc_min_store_id {
     sql: ${TABLE}.theme_version ;;
   }
 
+  measure: rolling_count {
+    type: running_total
+    sql: ${count_distinct_ip_hll} ;;
+  }
 
 
- measure: hll_count_test {
-   type: number
-   sql: (select hll_count.merge(${TABLE}.client_hll) from `admin-account-293313.Temp_table_forBI.hll_test01_prc_min_store_id` where ${TABLE}.event = 'PageView');;
- }
  measure: count_distinct_ip_hll {
     # type: number
     # sql: APPROX_COUNT_DISTINCT(ip_hll) ;;
     type: count_distinct
     allow_approximate_optimization: yes
     sql: ${ip_hll} ;;
+  }
+
+  dimension: date_diff {
+    type: number
+    sql: date_diff(current_date(),${prc_hour_date}},day) ;;
+  }
+
+  dimension: period {
+    type: string
+    sql:
+     CASE
+        WHEN ${date_diff} >=0 and ${date_diff} <=0 THEN "Current Period"
+        WHEN ${date_diff} >= 1 and ${date_diff} <=1 THEN "Last Period"
+        ELSE null
+      END
+    ;;
   }
 
 
