@@ -25,7 +25,7 @@ explore: rolling_test_1 {}
 explore: hll_test_1 {}
 
 explore: problem_2 {}
-
+explore: problem_3 {}
 
 explore: hll_mins {}
 

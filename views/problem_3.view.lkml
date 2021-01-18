@@ -1,26 +1,27 @@
-view: problem_2 {
+view: problem_3 {
   derived_table: {
-    sql: with pre_group as (select
-        date(date_min) as prc_date,
+    sql: select
+        date(date_min,"Asia/Shanghai") as prc_date,
         store_id,
-        country,
-        event,
         hll_count.merge(ip_hll) as client_id_num
         from `admin-account-293313.HLL_scheduled.hll_mins_PvUvUsd_store_id_0915_utc_tongbin`
         where {% condition prc_date %} date(date_min) {% endcondition %}
-        and  {% condition event %} event {% endcondition %}
-        and  {% condition country %} country {% endcondition %}
-        group by 1,2,3,4
-        -- ,3,4
-      )
-      select
-        prc_date,
-        client_id_num,
-        country,
-        event
-      from pre_group
-       ;;
+        and  event = {% parameter event %}
+        group by 1,2;;
   }
+
+
+  parameter: country {
+    description: "country"
+    type: string
+  }
+
+  parameter: event {
+    description: "event"
+    type: string
+  }
+
+
   measure: count {
     type: count
     drill_fields: [detail*]
@@ -42,15 +43,15 @@ view: problem_2 {
     sql: ${TABLE}.client_id_num ;;
   }
 
-  dimension: country {
-    type: string
-    sql: ${TABLE}.country ;;
-  }
+  # dimension: country {
+  #   type: string
+  #   sql: ${TABLE}.country ;;
+  # }
 
-  dimension: event {
-    type: string
-    sql: ${TABLE}.event ;;
-  }
+  # dimension: event {
+  #   type: string
+  #   sql: ${TABLE}.event ;;
+  # }
 
   set: detail {
     fields: [prc_date, client_id_num, country, event]
