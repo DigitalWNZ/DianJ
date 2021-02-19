@@ -7,6 +7,7 @@ view: problem_3 {
         from `admin-account-293313.HLL_scheduled.hll_mins_PvUvUsd_store_id_0915_utc_tongbin`
         where {% condition prc_date %} date(date_min) {% endcondition %}
         and  event = {% parameter event %}
+        and country= {% parameter country %}
         group by 1,2;;
   }
 
